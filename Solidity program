@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.4.22 <0.9.0; //compile with the 0.5.0+commit
+
+contract TimedPayment { // This line declares a new contract named TimedPayment.
+    address payable recipient;// This line declares a state variable 'recipient' of type 'address payable'. This variable will hold the Ethereum address of the recipient.
+    uint256 public releaseTime; // This line declares a state variable 'releaseTime' of type 'uint256'. This variable will hold the timestamp when the funds can be released to the recipient.
+
+    constructor(address payable _recipient, uint256 _releaseTime) public payable {// This is the constructor function, which is called once when the contract is deployed. It takes two parameters: the recipient's address and the release time.
+        require(_releaseTime > block.timestamp);// This line checks that the release time is in the future. If not, the contract deployment will fail.
+        recipient = _recipient;// This line sets the state variable 'recipient' to the value of the '_recipient' parameter.
+        releaseTime = _releaseTime;// This line sets the state variable 'releaseTime' to the value of the '_releaseTime' parameter.
+    }
+
+    function release() public {// This is a public function named 'release'. Anyone can call this function.
+        require(block.timestamp >= releaseTime);// This line checks that the current time is equal to or later than the release time. If not, the function call will fail.
+        recipient.transfer(address(this).balance);// This line sends all the funds held by the contract to the recipient.
+    }
+}
